@@ -75,6 +75,11 @@ class CameraImage:
     url: str
     captured_at: datetime
 
+    @property
+    def key(self) -> str:
+        """S3 object path. Filenames repeat across camera positions, so use this to tell images apart."""
+        return self.url.split("?", 1)[0]
+
 
 ICE_MODES = {0: "stop", 1: "normal", 2: "quick"}
 # 3-step temperature settings (temp control mode 1) for HXCC-type models

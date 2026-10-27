@@ -50,7 +50,7 @@ class HitachiCoordinator(DataUpdateCoordinator[dict[str, FridgeData]]):
             update_interval=SCAN_INTERVAL,
         )
         self.client = client
-        # filename -> JPEG bytes, so each image is downloaded only once.
+        # image key (S3 path) -> JPEG bytes, so each image is downloaded only once.
         self._image_cache: dict[str, bytes] = {}
 
     async def _async_update_data(self) -> dict[str, FridgeData]:
@@ -71,7 +71,7 @@ class HitachiCoordinator(DataUpdateCoordinator[dict[str, FridgeData]]):
         finally:
             self._save_session_if_changed(session_before)
 
-        wanted = {img.filename for f in data.values() for img in f.images.values()}
+        wanted = {img.key for f in data.values() for img in f.images.values()}
         self._image_cache = {k: v for k, v in self._image_cache.items() if k in wanted}
         return data
 
@@ -84,7 +84,7 @@ class HitachiCoordinator(DataUpdateCoordinator[dict[str, FridgeData]]):
             )
 
     async def async_get_image(self, image: CameraImage) -> bytes | None:
-        if (cached := self._image_cache.get(image.filename)) is not None:
+        if (cached := self._image_cache.get(image.key)) is not None:
             return cached
         try:
             content = await self.client.download(image.url)
@@ -93,5 +93,5 @@ class HitachiCoordinator(DataUpdateCoordinator[dict[str, FridgeData]]):
             _LOGGER.debug("Could not download %s: %s", image.filename, err)
             await self.async_request_refresh()
             return None
-        self._image_cache[image.filename] = content
+        self._image_cache[image.key] = content
         return content
