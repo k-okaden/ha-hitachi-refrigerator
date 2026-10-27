@@ -30,6 +30,47 @@
     }
   },
   "entity": {
+    "binary_sensor": {
+      "power_saving_mode": {
+        "name": "Power saving mode"
+      },
+      "quick_cooling_mode": {
+        "name": "Quick cooling mode"
+      },
+      "spot_cooling_mode": {
+        "name": "Spot cooling mode"
+      },
+      "rapid_cooling_mode": {
+        "name": "Rapid cooling mode"
+      },
+      "quick_freezing_mode": {
+        "name": "Quick freezing mode"
+      },
+      "power_saving_active": {
+        "name": "Saving power"
+      },
+      "water_tank_empty": {
+        "name": "Water tank empty"
+      },
+      "ice_cleaning": {
+        "name": "Ice maker cleaning"
+      },
+      "quick_ice": {
+        "name": "Quick ice"
+      },
+      "rapid_cooling": {
+        "name": "Rapid cooling"
+      },
+      "quick_cooling": {
+        "name": "Quick cooling"
+      },
+      "quick_freezing": {
+        "name": "Quick freezing"
+      },
+      "problem": {
+        "name": "Problem"
+      }
+    },
     "camera": {
       "center": {
         "name": "Shelves"
@@ -44,6 +85,79 @@
     "sensor": {
       "last_captured": {
         "name": "Last captured"
+      },
+      "door_open_count_today": {
+        "name": "Door openings today"
+      },
+      "door_open_count_yesterday": {
+        "name": "Door openings yesterday"
+      },
+      "fridge_door_open_time_today": {
+        "name": "Refrigerator door open time today"
+      },
+      "drawer_open_time_today": {
+        "name": "Drawer open time today"
+      },
+      "fridge_door_open_time_yesterday": {
+        "name": "Refrigerator door open time yesterday"
+      },
+      "drawer_open_time_yesterday": {
+        "name": "Drawer open time yesterday"
+      },
+      "ice_mode": {
+        "name": "Ice making",
+        "state": {
+          "stop": "Stopped",
+          "normal": "On",
+          "quick": "Quick ice"
+        }
+      },
+      "error_code": {
+        "name": "Error code"
+      },
+      "info_code": {
+        "name": "Info code"
+      },
+      "reported_at": {
+        "name": "Status reported"
+      },
+      "fridge_setting": {
+        "name": "Refrigerator setting",
+        "state": {
+          "weak": "Weak",
+          "standard": "Standard",
+          "chilled": "Chilled",
+          "level_1": "1",
+          "level_2": "2",
+          "level_3": "3",
+          "level_4": "4",
+          "level_5": "5",
+          "level_6": "6",
+          "level_7": "7",
+          "level_8": "8",
+          "level_9": "9",
+          "level_10": "10",
+          "level_11": "11"
+        }
+      },
+      "freezer_setting": {
+        "name": "Freezer setting",
+        "state": {
+          "weak": "Weak",
+          "standard": "Standard",
+          "strong": "Strong",
+          "level_1": "1",
+          "level_2": "2",
+          "level_3": "3",
+          "level_4": "4",
+          "level_5": "5",
+          "level_6": "6",
+          "level_7": "7",
+          "level_8": "8",
+          "level_9": "9",
+          "level_10": "10",
+          "level_11": "11"
+        }
       }
     }
   }

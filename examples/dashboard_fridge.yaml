@@ -45,6 +45,67 @@ views:
       - type: grid
         cards:
           - type: heading
+            heading: 運転状況
+            heading_style: title
+            badges:
+              - type: entity
+                entity: binary_sensor.hitachi_fridge_power_saving_active
+                show_state: true
+                show_icon: true
+                icon: mdi:leaf
+              - type: entity
+                entity: binary_sensor.hitachi_fridge_problem
+                show_state: true
+                show_icon: true
+          - type: tile
+            entity: sensor.hitachi_fridge_door_open_count_today
+            name: 今日のドア開閉
+            icon: mdi:door-open
+          - type: tile
+            entity: sensor.hitachi_fridge_door_open_count_yesterday
+            name: 昨日のドア開閉
+            icon: mdi:history
+          - type: tile
+            entity: sensor.hitachi_fridge_fridge_door_open_time_today
+            name: 冷蔵室ドア 開放時間
+            icon: mdi:timer-outline
+          - type: tile
+            entity: sensor.hitachi_fridge_drawer_open_time_today
+            name: 引出ドア 開放時間
+            icon: mdi:timer-outline
+          - type: tile
+            entity: sensor.hitachi_fridge_fridge_setting
+            name: 冷蔵室
+            icon: mdi:fridge-top
+          - type: tile
+            entity: sensor.hitachi_fridge_ice_mode
+            name: 製氷室
+            icon: mdi:cube-outline
+          - type: tile
+            entity: sensor.hitachi_fridge_freezer_setting
+            name: 冷凍室
+            icon: mdi:snowflake
+          - type: tile
+            entity: binary_sensor.hitachi_fridge_quick_cooling_mode
+            name: クイック冷却
+            icon: mdi:fan
+          - type: tile
+            entity: binary_sensor.hitachi_fridge_power_saving_mode
+            name: 節電モード
+            icon: mdi:leaf
+          - type: tile
+            entity: binary_sensor.hitachi_fridge_water_tank_empty
+            name: 給水タンク
+            icon: mdi:water-alert
+          - type: history-graph
+            title: ドア開閉回数
+            hours_to_show: 48
+            entities:
+              - entity: sensor.hitachi_fridge_door_open_count_today
+                name: 開閉回数
+      - type: grid
+        cards:
+          - type: heading
             heading: 撮影の記録
             heading_style: title
           - type: tile

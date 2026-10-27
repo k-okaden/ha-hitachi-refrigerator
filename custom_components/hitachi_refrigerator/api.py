@@ -76,6 +76,143 @@ class CameraImage:
     captured_at: datetime
 
 
+ICE_MODES = {0: "stop", 1: "normal", 2: "quick"}
+# 3-step temperature settings (temp control mode 1) for HXCC-type models
+# (R.array.ref_tem_N_patternB / freeze_tem_N_patternB).
+FRIDGE_SETTINGS = {2: "weak", 6: "standard", 10: "chilled"}
+FREEZER_SETTINGS = {2: "weak", 6: "standard", 10: "strong"}
+# 11-step mode (temp control mode 2) is reported as level_1 .. level_11.
+LEVELS = [f"level_{i}" for i in range(1, 12)]
+
+
+def _setting(mode: int, level: int, three_step: dict[int, str]) -> str | None:
+    if mode == 1:
+        return three_step.get(level)
+    if mode == 2 and 1 <= level <= 11:
+        return f"level_{level}"
+    return None
+
+
+@dataclass
+class FridgeStatus:
+    """GETINF 0001: the packed status the app shows on 冷蔵庫の運転状況 (DataGetInf)."""
+
+    reported_at: datetime | None
+    temp_control_mode: int  # 1 = 3段階, 2 = 11段階
+    fridge_level: int
+    freezer_level: int
+    ice_mode: str | None
+    power_saving_mode: int  # 節電モードの設定
+    cooling_mode: int  # 冷却モードの設定ビット
+    door_open_count_today: int
+    door_open_count_yesterday: int
+    fridge_door_open_seconds_today: int
+    fridge_door_open_seconds_yesterday: int
+    drawer_open_seconds_today: int
+    drawer_open_seconds_yesterday: int
+    info_code: str
+    error_code: str
+    move_sign: int
+    status_bits: int
+
+    # 冷蔵庫設定 screen (HR00300Fragment)
+    @property
+    def fridge_setting(self) -> str | None:
+        return _setting(self.temp_control_mode, self.fridge_level, FRIDGE_SETTINGS)
+
+    @property
+    def freezer_setting(self) -> str | None:
+        return _setting(self.temp_control_mode, self.freezer_level, FREEZER_SETTINGS)
+
+    @property
+    def power_saving_enabled(self) -> bool:
+        return self.power_saving_mode == 1
+
+    # 冷却モード switches (HR00303Fragment)
+    @property
+    def spot_cooling_enabled(self) -> bool:  # スポット冷蔵
+        return bool(self.cooling_mode & 0x01)
+
+    @property
+    def rapid_cooling_enabled(self) -> bool:  # サッと急冷却
+        return bool(self.cooling_mode & 0x02)
+
+    @property
+    def quick_cooling_enabled(self) -> bool:  # クイック冷却
+        return bool(self.cooling_mode & 0x08)
+
+    @property
+    def quick_freezing_enabled(self) -> bool:  # 急冷凍
+        return bool(self.cooling_mode & 0x10)
+
+    # 運転状況 screen rows (HR00301Fragment)
+    @property
+    def power_saving_active(self) -> bool:  # 消費電力が抑えられています
+        return bool(self.move_sign & 0x01)
+
+    @property
+    def water_tank_empty(self) -> bool:
+        return bool(self.move_sign & 0x02)
+
+    @property
+    def ice_cleaning(self) -> bool:
+        return bool(self.status_bits & 0x01)
+
+    @property
+    def quick_ice(self) -> bool:
+        return bool(self.status_bits & 0x04)
+
+    @property
+    def rapid_cooling(self) -> bool:  # サッと急冷却中
+        return bool(self.status_bits & 0x08)
+
+    @property
+    def quick_cooling(self) -> bool:  # クイック冷却中
+        return bool(self.status_bits & 0x20)
+
+    @property
+    def quick_freezing(self) -> bool:  # 急冷凍中
+        return bool(self.status_bits & 0x40)
+
+    @property
+    def has_problem(self) -> bool:
+        return self.info_code != "000" or self.error_code != "000"
+
+
+def parse_status(data: str) -> FridgeStatus:
+    def num(start: int, end: int) -> int:
+        return int(data[start:end], 16)
+
+    def ascii_code(start: int) -> str:
+        return bytes.fromhex(data[start : start + 6]).decode("ascii", "replace")
+
+    reported_at = None
+    if data[:12].strip("0"):
+        reported_at = datetime(
+            num(0, 4), num(4, 6), num(6, 8), num(8, 10), num(10, 12), tzinfo=_JST
+        )
+    return FridgeStatus(
+        reported_at=reported_at,
+        status_bits=num(16, 18),
+        move_sign=num(18, 20),
+        freezer_level=num(20, 22),
+        fridge_level=num(22, 24),
+        temp_control_mode=num(24, 26),
+        power_saving_mode=num(26, 28),
+        ice_mode=ICE_MODES.get(num(30, 32)),
+        cooling_mode=num(32, 34),
+        door_open_count_today=num(40, 44),
+        door_open_count_yesterday=num(44, 48),
+        info_code=ascii_code(54),
+        error_code=ascii_code(60),
+        # "F" in the app is the drawer doors, "D" the refrigerator door.
+        drawer_open_seconds_today=num(74, 78),
+        fridge_door_open_seconds_today=num(78, 82),
+        drawer_open_seconds_yesterday=num(82, 86),
+        fridge_door_open_seconds_yesterday=num(86, 90),
+    )
+
+
 def encrypt(key: bytes, iv: bytes, text: str) -> bytes:
     data = text.encode()
     # BouncyCastle's ZeroBytePadding adds a full block when already aligned.
@@ -188,6 +325,19 @@ class HitachiClient:
                 if captured_at := parse_captured_at(name):
                     images.append(CameraImage(name, url, captured_at))
         return sorted(images, key=lambda i: i.captured_at)
+
+    async def get_status(self, device: HitachiDevice) -> FridgeStatus | None:
+        """Operating status; None when the fridge is offline or updating."""
+        res = await self._cgi(
+            lambda s: {"CMD": "GETINF", "SRC": device.src, "DST": device.dst, "DATA": "0001"}
+        )
+        kind, _, data = (res.get("DATA") or "").partition(",")
+        if str(res.get("GRP")) != "0" or kind != "0001" or len(data) < 90:
+            return None
+        try:
+            return parse_status(data)
+        except ValueError as err:
+            raise HitachiError(f"Could not parse status {data!r}: {err}") from err
 
     async def download(self, url: str) -> bytes:
         try:
