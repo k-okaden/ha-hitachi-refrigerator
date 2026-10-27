@@ -1,0 +1,50 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "日立 冷蔵庫",
+        "description": "日立冷蔵庫コンシェルジュアプリで使っている日立家電メンバーズクラブのアカウントでログインします。",
+        "data": {
+          "email": "メールアドレス",
+          "password": "パスワード"
+        }
+      },
+      "reauth_confirm": {
+        "title": "再ログイン",
+        "description": "{email} のパスワードが通りませんでした。現在のパスワードを入力してください。",
+        "data": {
+          "password": "パスワード"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "メールアドレスかパスワードが違います。",
+      "cannot_connect": "日立のクラウドに接続できませんでした。",
+      "no_devices": "このアカウントに登録された冷蔵庫がありません。",
+      "missing_keys": "鍵ファイルが見つかりません。Home Assistant の config フォルダに hitachi_refrigerator_keys.json を置いてください (README 参照)。"
+    },
+    "abort": {
+      "already_configured": "このアカウントは設定済みです。",
+      "reauth_successful": "再ログインしました。",
+      "wrong_account": "別のアカウントです。"
+    }
+  },
+  "entity": {
+    "camera": {
+      "center": {
+        "name": "棚"
+      },
+      "left": {
+        "name": "左ドアポケット"
+      },
+      "right": {
+        "name": "右ドアポケット"
+      }
+    },
+    "sensor": {
+      "last_captured": {
+        "name": "最終撮影"
+      }
+    }
+  }
+}

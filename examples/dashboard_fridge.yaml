@@ -1,0 +1,60 @@
+# 冷蔵庫ダッシュボード
+#
+# 使い方: 設定 → ダッシュボード → ダッシュボードを追加 → 「新しいダッシュボードを最初から作成」
+#         → 開いて右上の鉛筆 → ︙ → 「YAML 編集」に、このファイルの中身を貼り付ける
+title: 冷蔵庫
+views:
+  - title: 冷蔵庫
+    path: fridge
+    icon: mdi:fridge-outline
+    type: sections
+    max_columns: 3
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading: 冷蔵室
+            heading_style: title
+            badges:
+              - type: entity
+                entity: sensor.hitachi_fridge_last_captured
+                show_state: true
+                show_icon: true
+                icon: mdi:camera-timer
+          - type: picture-entity
+            entity: camera.hitachi_fridge_center
+            name: 棚
+            camera_view: auto
+            show_state: false
+            grid_options:
+              columns: full
+          - type: picture-entity
+            entity: camera.hitachi_fridge_left
+            name: 左ドアポケット
+            camera_view: auto
+            show_state: false
+            grid_options:
+              columns: 6
+          - type: picture-entity
+            entity: camera.hitachi_fridge_right
+            name: 右ドアポケット
+            camera_view: auto
+            show_state: false
+            grid_options:
+              columns: 6
+      - type: grid
+        cards:
+          - type: heading
+            heading: 撮影の記録
+            heading_style: title
+          - type: tile
+            entity: sensor.hitachi_fridge_last_captured
+            name: 最終撮影 (≒最後にドアを開けた時刻)
+            icon: mdi:door-open
+            grid_options:
+              columns: full
+          - type: logbook
+            target:
+              entity_id: sensor.hitachi_fridge_last_captured
+            hours_to_show: 48
+            title: 最近の撮影

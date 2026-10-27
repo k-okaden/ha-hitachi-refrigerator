@@ -1,0 +1,50 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Hitachi Refrigerator",
+        "description": "Sign in with the Hitachi Kaden Members Club account you use in the Hitachi Refrigerator Concierge app.",
+        "data": {
+          "email": "Email",
+          "password": "Password"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Sign in again",
+        "description": "The password for {email} was rejected. Enter the current password.",
+        "data": {
+          "password": "Password"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "The email address or password is incorrect.",
+      "cannot_connect": "Could not reach the Hitachi cloud.",
+      "no_devices": "No refrigerator is paired with this account.",
+      "missing_keys": "AES keys not found. Put hitachi_refrigerator_keys.json in the Home Assistant config folder (see README)."
+    },
+    "abort": {
+      "already_configured": "This account is already configured.",
+      "reauth_successful": "Signed in again.",
+      "wrong_account": "That is a different account."
+    }
+  },
+  "entity": {
+    "camera": {
+      "center": {
+        "name": "Shelves"
+      },
+      "left": {
+        "name": "Left door pocket"
+      },
+      "right": {
+        "name": "Right door pocket"
+      }
+    },
+    "sensor": {
+      "last_captured": {
+        "name": "Last captured"
+      }
+    }
+  }
+}
