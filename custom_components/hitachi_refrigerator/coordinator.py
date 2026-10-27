@@ -10,7 +10,14 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .api import CameraImage, HitachiAuthError, HitachiClient, HitachiDevice, HitachiError
+from .api import (
+    CameraImage,
+    FridgeStatus,
+    HitachiAuthError,
+    HitachiClient,
+    HitachiDevice,
+    HitachiError,
+)
 from .const import CAMERA_POSITIONS, CONF_SESSION, DOMAIN, SCAN_INTERVAL
 
 _LOGGER = logging.getLogger(__name__)
@@ -21,12 +28,14 @@ type HitachiConfigEntry = ConfigEntry[HitachiCoordinator]
 @dataclass
 class FridgeData:
     device: HitachiDevice
+    # None while the fridge is offline or updating its software.
+    status: FridgeStatus | None = None
     # Latest image per camera position (missing when that camera has none).
     images: dict[str, CameraImage] = field(default_factory=dict)
 
 
 class HitachiCoordinator(DataUpdateCoordinator[dict[str, FridgeData]]):
-    """Polls the latest camera image list for every refrigerator on the account."""
+    """Polls the status and latest camera images of every refrigerator on the account."""
 
     config_entry: HitachiConfigEntry
 
@@ -50,7 +59,7 @@ class HitachiCoordinator(DataUpdateCoordinator[dict[str, FridgeData]]):
             devices = await self.client.get_devices()
             data: dict[str, FridgeData] = {}
             for device in devices:
-                fridge = FridgeData(device)
+                fridge = FridgeData(device, await self.client.get_status(device))
                 for position in CAMERA_POSITIONS:
                     if images := await self.client.get_camera_images(device.dst, position):
                         fridge.images[position] = images[-1]

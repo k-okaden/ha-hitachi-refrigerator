@@ -30,6 +30,47 @@
     }
   },
   "entity": {
+    "binary_sensor": {
+      "power_saving_mode": {
+        "name": "節電モード"
+      },
+      "quick_cooling_mode": {
+        "name": "クイック冷却"
+      },
+      "spot_cooling_mode": {
+        "name": "スポット冷蔵"
+      },
+      "rapid_cooling_mode": {
+        "name": "サッと急冷却"
+      },
+      "quick_freezing_mode": {
+        "name": "急冷凍"
+      },
+      "power_saving_active": {
+        "name": "消費電力を抑えて運転中"
+      },
+      "water_tank_empty": {
+        "name": "給水タンクの水切れ"
+      },
+      "ice_cleaning": {
+        "name": "製氷おそうじ中"
+      },
+      "quick_ice": {
+        "name": "急速製氷中"
+      },
+      "rapid_cooling": {
+        "name": "サッと急冷却中"
+      },
+      "quick_cooling": {
+        "name": "クイック冷却中"
+      },
+      "quick_freezing": {
+        "name": "急冷凍中"
+      },
+      "problem": {
+        "name": "異常"
+      }
+    },
     "camera": {
       "center": {
         "name": "棚"
@@ -44,6 +85,79 @@
     "sensor": {
       "last_captured": {
         "name": "最終撮影"
+      },
+      "door_open_count_today": {
+        "name": "今日のドア開閉回数"
+      },
+      "door_open_count_yesterday": {
+        "name": "昨日のドア開閉回数"
+      },
+      "fridge_door_open_time_today": {
+        "name": "今日の冷蔵室ドア開放時間"
+      },
+      "drawer_open_time_today": {
+        "name": "今日の引出ドア開放時間"
+      },
+      "fridge_door_open_time_yesterday": {
+        "name": "昨日の冷蔵室ドア開放時間"
+      },
+      "drawer_open_time_yesterday": {
+        "name": "昨日の引出ドア開放時間"
+      },
+      "ice_mode": {
+        "name": "製氷",
+        "state": {
+          "stop": "製氷停止",
+          "normal": "製氷",
+          "quick": "急速製氷"
+        }
+      },
+      "error_code": {
+        "name": "エラーコード"
+      },
+      "info_code": {
+        "name": "お知らせコード"
+      },
+      "reported_at": {
+        "name": "状態の更新日時"
+      },
+      "fridge_setting": {
+        "name": "冷蔵室の設定",
+        "state": {
+          "weak": "弱め",
+          "standard": "標準",
+          "chilled": "チルド",
+          "level_1": "1",
+          "level_2": "2",
+          "level_3": "3",
+          "level_4": "4",
+          "level_5": "5",
+          "level_6": "6",
+          "level_7": "7",
+          "level_8": "8",
+          "level_9": "9",
+          "level_10": "10",
+          "level_11": "11"
+        }
+      },
+      "freezer_setting": {
+        "name": "冷凍室の設定",
+        "state": {
+          "weak": "弱め",
+          "standard": "標準",
+          "strong": "強め",
+          "level_1": "1",
+          "level_2": "2",
+          "level_3": "3",
+          "level_4": "4",
+          "level_5": "5",
+          "level_6": "6",
+          "level_7": "7",
+          "level_8": "8",
+          "level_9": "9",
+          "level_10": "10",
+          "level_11": "11"
+        }
       }
     }
   }

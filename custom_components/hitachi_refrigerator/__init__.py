@@ -14,7 +14,7 @@ from .api import HitachiClient, HitachiSession
 from .const import CONF_SESSION, KEYS_CONFIG_FILE, KEYS_FILE
 from .coordinator import HitachiConfigEntry, HitachiCoordinator
 
-PLATFORMS = [Platform.CAMERA, Platform.SENSOR]
+PLATFORMS = [Platform.BINARY_SENSOR, Platform.CAMERA, Platform.SENSOR]
 
 
 def load_keys(config_dir: str) -> dict[str, str]:
