@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.DS_Store
+
+# アプリ由来の鍵・APK・個人のログイン情報や画像は公開しない
+keys.json
+*_keys.json
+session.json
+images/
+apk/
+capture/
+*.apk
