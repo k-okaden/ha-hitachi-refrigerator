@@ -95,6 +95,11 @@ export HITACHI_PASSWORD='...'
 python3 tools/fridge_camera.py --debug             # images/ に保存
 ```
 
+## アイコン
+
+`custom_components/hitachi_refrigerator/brand/` にアイコンを同梱しています (Home Assistant 2026.3 以降で表示)。
+元の SVG は [`docs/brand-src/`](docs/brand-src/) にあります。日立の公式ロゴではありません。
+
 ## プロトコルメモ
 
 通信の仕組み (暗号化、ログイン、機器 ID、画像パスの作り方、そのほかのコマンド) は [`docs/protocol.md`](docs/protocol.md) にまとめています。
